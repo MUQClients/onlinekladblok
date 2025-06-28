@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Kladblok met Opmaak</title>
+  <style>
+    :root {
+      --bg-light: #f5f5f5;
+      --text-light: #000;
+      --bg-dark: #1e1e1e;
+      --text-dark: #eee;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background-color: #007acc;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    #toolbar {
+      background: #e0e0e0;
+      padding: 0.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    select, button {
+      padding: 0.3rem;
+    }
+
+    textarea {
+      flex-grow: 1;
+      border: none;
+      resize: none;
+      padding: 1rem;
+      box-sizing: border-box;
+      font-size: 1rem;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    footer {
+      background: #e0e0e0;
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    body.light textarea {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body.dark textarea {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+  </style>
+</head>
+<body class="light">
+  <header>
+    <h1>Online Kladblok</h1>
+  </header>
+
+  <div id="toolbar">
+    <label>Lettertype:
+      <select id="fontSelect">
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+    </label>
+
+    <label>Grootte:
+      <select id="sizeSelect">
+        <option value="14px">14px</option>
+        <option value="16px" selected>16px</option>
+        <option value="18px">18px</option>
+        <option value="20px">20px</option>
+      </select>
+    </label>
+
+    <button id="themeToggle">Donkere modus</button>
+  </div>
+
+  <textarea id="notepad" placeholder="Typ hier je notities..."></textarea>
+
+  <footer>
+    Je notities en instellingen worden automatisch opgeslagen in je browser.
+  </footer>
+
+  <script>
+    const textarea = document.getElementById("notepad");
+    const fontSelect = document.getElementById("fontSelect");
+    const sizeSelect = document.getElementById("sizeSelect");
+    const themeToggle = document.getElementById("themeToggle");
+    const body = document.body;
+
+    // Load previous settings
+    textarea.value = localStorage.getItem("kladblok") || "";
+    fontSelect.value = localStorage.getItem("font") || "Arial";
+    sizeSelect.value = localStorage.getItem("fontsize") || "16px";
+    const savedTheme = localStorage.getItem("theme") || "light";
+    body.className = savedTheme;
+    themeToggle.textContent = savedTheme === "dark" ? "Lichte modus" : "Donkere modus";
+
+    // Apply settings
+    textarea.style.fontFamily = fontSelect.value;
+    textarea.style.fontSize = sizeSelect.value;
+
+    // Save text
+    textarea.addEventListener("input", () => {
+      localStorage.setItem("kladblok", textarea.value);
+    });
+
+    // Font change
+    fontSelect.addEventListener("change", () => {
+      textarea.style.fontFamily = fontSelect.value;
+      localStorage.setItem("font", fontSelect.value);
+    });
+
+    // Font size change
+    sizeSelect.addEventListener("change", () => {
+      textarea.style.fontSize = sizeSelect.value;
+      localStorage.setItem("fontsize", sizeSelect.value);
+    });
+
+    // Theme toggle
+    themeToggle.addEventListener("click", () => {
+      const newTheme = body.className === "light" ? "dark" : "light";
+      body.className = newTheme;
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "Lichte modus" : "Donkere modus";
+    });
+  </script>
+</body>
+</html>
